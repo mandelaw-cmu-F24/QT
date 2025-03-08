@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  api:
+    container_name: kente-comfort-api
+    image: kente-comfort-api:1.0.0
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    env_file: .env
+    ports:
+      - '6000:3000'
+    networks:
+      - kente-comfort-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - database
+  database:
+    container_name: kente-comfort-database
+    image: postgres:12
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=$POSTGRESDB_USER
+      - POSTGRES_PASSWORD=$POSTGRESDB_ROOT_PASSWORD
+      - POSTGRES_DB=$POSTGRESDB_DATABASE
+    ports:
+      - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - kente-comfort-network
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  kente-comfort-network:
+
+volumes:
+  postgres-data:
