@@ -9,19 +9,27 @@ import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Apply security middleware
   app.use(helmet());
-  // app.setGlobalPrefix('api');
+
+  // Set up validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
     }),
   );
+
+  // Configure CORS
   app.enableCors(configuration().cors);
+
+  // Set up Swagger documentation in non-production
   if (!isRunningInProduction()) {
     const document = SwaggerModule.createDocument(app, swaggerConfig.options);
     SwaggerModule.setup(swaggerConfig.url, app, document);
   }
+
   await app.listen(process.env.PORT || 3000);
   Logger.warn(
     `The application is currently in ${

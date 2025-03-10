@@ -1,8 +1,9 @@
-import { Column, Entity, Unique } from 'typeorm';
+import { Column, Entity, Unique, OneToMany } from 'typeorm';
 import { UserRole } from '../enums/role.enum';
 import { Audit } from '../../common/utils/audit.entity';
 import { Exclude } from 'class-transformer';
 import { AuthType } from '../../common/enums/authtype.enum';
+import { Url } from '../../urls/entities/url.entity';
 
 @Entity()
 @Unique(['email'])
@@ -40,4 +41,7 @@ export class User extends Audit {
   @Column({ nullable: true })
   @Exclude()
   refreshToken?: string;
+
+  @OneToMany(() => Url, (url) => url.user)
+  urls: Url[];
 }
