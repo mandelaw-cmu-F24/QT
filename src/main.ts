@@ -30,7 +30,7 @@ async function bootstrap() {
     SwaggerModule.setup(swaggerConfig.url, app, document);
   }
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 3001);
   Logger.warn(
     `The application is currently in ${
       process.env.NODE_ENV

@@ -21,10 +21,8 @@ export class UrlsService {
     private urlRepository: Repository<Url>,
     private configService: ConfigService,
   ) {
-    // Get base URL from config or use localhost for development
     this.baseUrl =
       this.configService.get('BASE_URL') || 'http://localhost:3000/';
-    // Ensure the base URL ends with a slash
     if (!this.baseUrl.endsWith('/')) {
       this.baseUrl += '/';
     }

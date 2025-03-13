@@ -3,6 +3,8 @@
 .gitignore
 .dockerignore
 Dockerfile
+docker-compose.yml
+dev-docker-compose.yml
 
 # Build dependencies
 dist

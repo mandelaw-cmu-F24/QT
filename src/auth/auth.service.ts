@@ -58,10 +58,7 @@ export class AuthService {
           accessToken: await this.generateJwtAccessToken(user.id, user.role),
           refreshToken: await this.generateJwtRefreshToken(user.id, user.role),
         };
-        await this.userService.setActiveRefreshToken(
-          user.id,
-          await this.bcryptService.hash(tokens.refreshToken),
-        );
+        await this.saveRefreshToken(user.id, tokens.refreshToken);
         return tokens;
       }
     }
@@ -110,5 +107,22 @@ export class AuthService {
       algorithm: 'RS256',
     });
     return token;
+  }
+
+  // New method to save refresh token
+  async saveRefreshToken(userId: number, refreshToken: string): Promise<void> {
+    const hashedRefreshToken = await this.bcryptService.hash(refreshToken);
+    await this.userService.setActiveRefreshToken(userId, hashedRefreshToken);
+  }
+
+  // New method to create tokens and save refresh token
+  async createTokensForUser(user: User): Promise<Token> {
+    const tokens = {
+      accessToken: await this.generateJwtAccessToken(user.id, user.role),
+      refreshToken: await this.generateJwtRefreshToken(user.id, user.role),
+    };
+
+    await this.saveRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
   }
 }
